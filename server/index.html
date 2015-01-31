@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dank Meets</title>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<style type="text/css">
+		</style>
+		<link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>
+      	<link href='stylesheet.css' rel='stylesheet' type='text/css'>
+
+      	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+      		
+      	<script>
+	
+	var posX = 59.32522;
+	var posY = 18.07002;
+	var positionList = [];
+	var markerList = [];
+	var map;
+	var complete = 0;
+	var cLong = 0;
+	var cLat = 0;
+	function getLocation() {
+   		if (navigator.geolocation) {
+        	navigator.geolocation.getCurrentPosition(showPosition);
+    	} else {
+       		// Require geolocation to be on
+       		alert("Geolocation must be turned on!");
+       		$("html").innerHTML = "";
+    	}
+	}
+	function showPosition(position) {
+    	cLat = position.coords.latitude;
+    	cLong = position.coords.longitude;
+    	var req = "get.php?long="+cLong+"&lat="+cLat;
+		$.ajax({
+     		async: true,
+    		type: 'GET',
+     		url: req,
+    		success: function(data) {
+     		}});
+	}
+	
+	function initialize() {
+		getLocation();
+		var pos;
+		$.ajax({
+     		async: false,
+    		type: 'GET',
+     		url: 'get.php',
+    		success: function(data) {
+          		pos = data;
+     		}});
+		var pl = pos.split(" ");
+		for (i=0;i<pl.length;i+=2){
+			positionList.push(new google.maps.LatLng(pl[i+1], pl[i]));	
+		}
+		var mapOptions = {
+			center: positionList[0],
+			zoom: 7,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		}
+		var mapCanvas = document.getElementById('map-canvas');
+		map = new google.maps.Map(mapCanvas, mapOptions);
+		
+		for (i=0;i<positionList.length;i++){
+			markerList.push(new google.maps.Marker({
+					map:map,
+					animation: google.maps.Animation.DROP,
+					position: positionList[i]
+				})
+			);
+			google.maps.event.addListener(positionList[i], 'click', toggleBounce);
+		}
+	}
+
+	function toggleBounce(){
+		if (markerList[0].getAnimation() != null) {
+			markerList[0].setAnimation(null);
+		} 
+		else {
+			markerList[0].setAnimation(google.maps.Animation.BOUNCE);
+		}
+	}
+	google.maps.event.addDomListener(window, 'load', initialize);
+      </script>
+
+	</head>
+	<body>
+		<script>
+		
+	
+		
+		</script>
+		<div id="map-canvas"></div>
+
+	</body>
+</html>
