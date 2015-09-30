@@ -1,9 +1,0 @@
-v1.0.1
-attempted text boxes on personal working version of site
-
-v1.1
-geolocation + server-sidestuff
-should have marker animation functionality
-
-v1.2
-attempted to add text boxes on top of markers when clicked (contentString)
